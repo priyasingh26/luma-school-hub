@@ -8,7 +8,7 @@ const coursesData = [
   {
     id: "CS101",
     name: "Introduction to Computer Science",
-    instructor: "Dr. Robert Anderson",
+    instructor: "Dr. Varun Bhabad",
     department: "Computer Science",
     credits: 3,
     enrolled: 45,
@@ -21,7 +21,7 @@ const coursesData = [
   {
     id: "MATH201",
     name: "Advanced Calculus",
-    instructor: "Dr. Maria Garcia", 
+    instructor: "Dr. Maria ", 
     department: "Mathematics",
     credits: 4,
     enrolled: 32,
@@ -34,7 +34,7 @@ const coursesData = [
   {
     id: "PHY301",
     name: "Quantum Physics",
-    instructor: "Dr. James Wilson",
+    instructor: "Dr. Ashok Choksi",
     department: "Physics", 
     credits: 4,
     enrolled: 28,
@@ -47,7 +47,7 @@ const coursesData = [
   {
     id: "CHEM201",
     name: "Organic Chemistry",
-    instructor: "Dr. Emily Davis",
+    instructor: "Dr. Emily Devi",
     department: "Chemistry",
     credits: 3,
     enrolled: 35,
@@ -60,7 +60,7 @@ const coursesData = [
   {
     id: "ENG301",
     name: "Mechanical Engineering Design",
-    instructor: "Dr. Michael Brown",
+    instructor: "Dr.Bibek Basu ",
     department: "Engineering",
     credits: 4,
     enrolled: 22,
@@ -73,7 +73,7 @@ const coursesData = [
   {
     id: "BIO201",
     name: "Molecular Biology",
-    instructor: "Dr. Sarah Miller",
+    instructor: "Dr. Sara Kapoor",
     department: "Biology",
     credits: 3,
     enrolled: 38,

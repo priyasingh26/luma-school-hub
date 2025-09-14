@@ -1,5 +1,6 @@
+// src/pages/Students.tsx
 import { motion } from "framer-motion";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { MoreHorizontal, Edit, Trash2, Eye, Mail, Phone } from "lucide-react";
 import {
   Table,
@@ -18,13 +19,16 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Input } from "@/components/ui/input";
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 
+// --- Mock data (replace with API later) ---
 const studentsData = [
   {
     id: "STU001",
-    name: "Emma Johnson",
-    email: "emma.johnson@email.com",
-    phone: "+1 (555) 123-4567",
+    name: "Akash Gupta",
+    email: "akash.gupta@email.com",
+    phone: "74874839201",
     course: "Computer Science",
     year: "3rd Year",
     gpa: 3.85,
@@ -32,10 +36,10 @@ const studentsData = [
     avatar: "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150"
   },
   {
-    id: "STU002", 
-    name: "Michael Chen",
-    email: "michael.chen@email.com",
-    phone: "+1 (555) 234-5678",
+    id: "STU002",
+    name: "Mohan Kumar",
+    email: "mohan.kumar@email.com",
+    phone: "7894561230",
     course: "Mathematics",
     year: "2nd Year",
     gpa: 3.92,
@@ -44,9 +48,9 @@ const studentsData = [
   },
   {
     id: "STU003",
-    name: "Sarah Williams",
-    email: "sarah.williams@email.com", 
-    phone: "+1 (555) 345-6789",
+    name: "Samiksha Patel",
+    email: "samiksha.patel@email.com",
+    phone: "89684739201",
     course: "Physics",
     year: "4th Year",
     gpa: 3.78,
@@ -55,9 +59,9 @@ const studentsData = [
   },
   {
     id: "STU004",
-    name: "David Rodriguez",
-    email: "david.rodriguez@email.com",
-    phone: "+1 (555) 456-7890",
+    name: "Kunal Singh",
+    email: "kunal.singh@email.com",
+    phone: "89684739201",
     course: "Engineering",
     year: "1st Year",
     gpa: 3.65,
@@ -66,11 +70,11 @@ const studentsData = [
   },
   {
     id: "STU005",
-    name: "Lisa Thompson",
-    email: "lisa.thompson@email.com",
-    phone: "+1 (555) 567-8901",
+    name: "Tanya Sharma",
+    email: "tanya.sharma@email.com",
+    phone: "89068567890",
     course: "Biology",
-    year: "3rd Year", 
+    year: "3rd Year",
     gpa: 3.91,
     status: "active",
     avatar: "https://images.unsplash.com/photo-1544725176-7c40e5a71c5e?w=150"
@@ -78,37 +82,85 @@ const studentsData = [
 ];
 
 export function StudentTable() {
-  const [students] = useState(studentsData);
+  const [search, setSearch] = useState("");
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [page, setPage] = useState(1);
+  const pageSize = 3;
+
+  // --- Filtering & Searching ---
+  const filteredStudents = useMemo(() => {
+    return studentsData.filter((student) => {
+      const matchesSearch =
+        student.name.toLowerCase().includes(search.toLowerCase()) ||
+        student.email.toLowerCase().includes(search.toLowerCase()) ||
+        student.id.toLowerCase().includes(search.toLowerCase()) ||
+        student.course.toLowerCase().includes(search.toLowerCase());
+
+      const matchesStatus =
+        statusFilter === "all" ? true : student.status === statusFilter;
+
+      return matchesSearch && matchesStatus;
+    });
+  }, [search, statusFilter]);
+
+  // --- Pagination ---
+  const totalPages = Math.ceil(filteredStudents.length / pageSize);
+  const paginatedStudents = filteredStudents.slice(
+    (page - 1) * pageSize,
+    page * pageSize
+  );
 
   const getStatusBadge = (status: string) => {
     return status === "active" ? (
-      <Badge className="bg-success/10 text-success border-success/20">Active</Badge>
+      <Badge className="bg-green-100 text-green-700 border-green-300">Active</Badge>
     ) : (
-      <Badge variant="secondary">Inactive</Badge>
+      <Badge className="bg-gray-100 text-gray-700 border-gray-300">Inactive</Badge>
     );
   };
 
   const getGPAColor = (gpa: number) => {
-    if (gpa >= 3.8) return "text-success";
-    if (gpa >= 3.5) return "text-warning";
-    return "text-muted-foreground";
+    if (gpa >= 3.8) return "text-green-600";
+    if (gpa >= 3.5) return "text-yellow-600";
+    return "text-gray-500";
   };
 
   return (
-    <div className="rounded-lg border border-border bg-card">
+    <div className="rounded-lg border border-border bg-card p-4 space-y-4">
+      {/* Toolbar */}
+      <div className="flex flex-col md:flex-row items-center justify-between gap-3">
+        <Input
+          placeholder="Search students..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="w-full md:w-64"
+        />
+
+        <Select value={statusFilter} onValueChange={setStatusFilter}>
+          <SelectTrigger className="w-[160px]">
+            <SelectValue placeholder="Filter Status" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All</SelectItem>
+            <SelectItem value="active">Active</SelectItem>
+            <SelectItem value="inactive">Inactive</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+
+      {/* Table */}
       <Table>
         <TableHeader>
           <TableRow className="hover:bg-transparent border-border">
-            <TableHead className="font-semibold">Student</TableHead>
-            <TableHead className="font-semibold">Contact</TableHead>
-            <TableHead className="font-semibold">Course & Year</TableHead>
-            <TableHead className="font-semibold">GPA</TableHead>
-            <TableHead className="font-semibold">Status</TableHead>
+            <TableHead>Student</TableHead>
+            <TableHead>Contact</TableHead>
+            <TableHead>Course & Year</TableHead>
+            <TableHead>GPA</TableHead>
+            <TableHead>Status</TableHead>
             <TableHead className="w-[50px]"></TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {students.map((student, index) => (
+          {paginatedStudents.map((student, index) => (
             <motion.tr
               key={student.id}
               initial={{ opacity: 0, y: 20 }}
@@ -120,31 +172,31 @@ export function StudentTable() {
                 <div className="flex items-center space-x-3">
                   <Avatar className="h-10 w-10">
                     <AvatarImage src={student.avatar} alt={student.name} />
-                    <AvatarFallback className="bg-primary/10 text-primary">
-                      {student.name.split(' ').map(n => n[0]).join('')}
+                    <AvatarFallback>
+                      {student.name.split(" ").map((n) => n[0]).join("")}
                     </AvatarFallback>
                   </Avatar>
                   <div>
-                    <p className="font-medium text-foreground">{student.name}</p>
+                    <p className="font-medium">{student.name}</p>
                     <p className="text-xs text-muted-foreground">{student.id}</p>
                   </div>
                 </div>
               </TableCell>
               <TableCell>
-                <div className="space-y-1">
-                  <div className="flex items-center space-x-1 text-sm">
+                <div className="space-y-1 text-sm">
+                  <div className="flex items-center space-x-1">
                     <Mail className="w-3 h-3 text-muted-foreground" />
-                    <span className="text-foreground">{student.email}</span>
+                    <span>{student.email}</span>
                   </div>
-                  <div className="flex items-center space-x-1 text-sm">
+                  <div className="flex items-center space-x-1">
                     <Phone className="w-3 h-3 text-muted-foreground" />
-                    <span className="text-muted-foreground">{student.phone}</span>
+                    <span>{student.phone}</span>
                   </div>
                 </div>
               </TableCell>
               <TableCell>
                 <div>
-                  <p className="font-medium text-foreground">{student.course}</p>
+                  <p className="font-medium">{student.course}</p>
                   <p className="text-sm text-muted-foreground">{student.year}</p>
                 </div>
               </TableCell>
@@ -157,9 +209,9 @@ export function StudentTable() {
               <TableCell>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button 
-                      variant="ghost" 
-                      size="sm" 
+                    <Button
+                      variant="ghost"
+                      size="sm"
                       className="h-8 w-8 p-0 opacity-0 group-hover:opacity-100 transition-opacity"
                     >
                       <MoreHorizontal className="h-4 w-4" />
@@ -185,6 +237,31 @@ export function StudentTable() {
           ))}
         </TableBody>
       </Table>
+
+      {/* Pagination */}
+      <div className="flex justify-between items-center mt-4">
+        <p className="text-sm text-muted-foreground">
+          Page {page} of {totalPages}
+        </p>
+        <div className="space-x-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setPage((p) => Math.max(1, p - 1))}
+            disabled={page === 1}
+          >
+            Prev
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+            disabled={page === totalPages}
+          >
+            Next
+          </Button>
+        </div>
+      </div>
     </div>
   );
 }

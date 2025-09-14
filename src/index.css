@@ -44,8 +44,6 @@ All colors MUST be HSL.
     --input: 215 15% 92%;
     --ring: 210 60% 58%;
 
-    --radius: 0.75rem;
-
     /* Gradients */
     --gradient-primary: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-glow)));
     --gradient-soft: linear-gradient(135deg, hsl(210 60% 97%), hsl(200 50% 95%));
@@ -135,11 +133,15 @@ All colors MUST be HSL.
 
 @layer base {
   * {
-    @apply border-border;
+    border-color: hsl(var(--border));
   }
 
   body {
-    @apply bg-background text-foreground font-inter antialiased;
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+    font-family: var(--font-inter), system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
   /* Custom animations */
@@ -159,21 +161,35 @@ All colors MUST be HSL.
 @layer components {
   /* Card styles */
   .card-soft {
-    @apply bg-gradient-to-br from-card to-muted/30 shadow-soft border-0;
+    background-image: linear-gradient(to bottom right, hsl(var(--card)), hsl(var(--muted) / 0.3));
+    box-shadow: var(--shadow-soft);
+    border: 0;
   }
 
   .card-hover {
-    @apply transition-all duration-300 hover:shadow-medium hover:-translate-y-1;
+    transition-property: all;
+    transition-duration: 300ms;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .card-hover:hover {
+    box-shadow: var(--shadow-medium);
+    transform: translateY(-0.25rem);
   }
 
   /* Button variants */
   .btn-gradient {
-    @apply bg-gradient-to-r from-primary to-primary-glow text-primary-foreground shadow-soft;
+    background-image: linear-gradient(to right, hsl(var(--primary)), hsl(var(--primary-glow)));
+    color: hsl(var(--primary-foreground));
+    box-shadow: var(--shadow-soft);
   }
 
   /* Text gradients */
   .text-gradient {
-    @apply bg-gradient-to-r from-primary to-primary-glow bg-clip-text text-transparent;
+    background-image: linear-gradient(to right, hsl(var(--primary)), hsl(var(--primary-glow)));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    color: transparent;
   }
 }
 
