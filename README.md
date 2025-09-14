@@ -124,9 +124,6 @@ Push to branch: git push origin feature-name
 
 Open a Pull Request
 
-License
-
-This project is MIT licensed.
 
 
 ---
